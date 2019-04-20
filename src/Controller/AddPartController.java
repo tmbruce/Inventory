@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 /**
@@ -52,17 +53,30 @@ public class AddPartController implements Initializable {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    private ToggleGroup sourceToggleGroup;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        sourceToggleGroup = new ToggleGroup();
+        this.inHouseRadio.setToggleGroup(sourceToggleGroup);
+        this.outsourcedRadio.setToggleGroup(sourceToggleGroup);
+        
     }    
 
     @FXML
     private void radioButtonChange(ActionEvent event) {
+        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
+            companyMachineLabel.setText("Machine ID");
+        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
+            companyMachineField.setPromptText("Machine ID");
+        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
+            companyMachineLabel.setText("Company Name");
+        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
+            companyMachineField.setPromptText("Company Name");
+        
     }
 
     @FXML
