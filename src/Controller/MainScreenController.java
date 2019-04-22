@@ -5,9 +5,12 @@
  */
 package Controller;
 
+import Model.Part;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 /**
@@ -33,15 +37,15 @@ public class MainScreenController implements Initializable {
     @FXML
     private TextField partsSearchTextField;
     @FXML
-    private TableView<?> partsTableView;
+    private TableView<Part> partsTableView;
     @FXML
-    private TableColumn<?, ?> partIDColumn;
+    private TableColumn<Part, Integer> partIDColumn;
     @FXML
-    private TableColumn<?, ?> partNameColumn;
+    private TableColumn<Part, String> partNameColumn;
     @FXML
-    private TableColumn<?, ?> partInventoryColumn;
+    private TableColumn<Part, Integer> partInventoryColumn;
     @FXML
-    private TableColumn<?, ?> partsPriceUnitColumn;
+    private TableColumn<Part, Double> partsPriceUnitColumn;
     @FXML
     private Button addPartsButton;
     @FXML
@@ -76,8 +80,18 @@ public class MainScreenController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
+        partInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        partsPriceUnitColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
+        
+        partsTableView.setItems(getParts());
+    }
+    
+    //This method returns an ObservableList of part objects
+    public ObservableList<Part> getParts(){
+        ObservableList<Part> parts = FXCollections.observableArrayList();
+    }
 
     @FXML
     private void partsSearchHandler(ActionEvent event) {
