@@ -150,7 +150,7 @@ public class MainScreenController implements Initializable {
     }
 
     @FXML
-    private void exitButtonHandler(ActionEvent event) {
+    private void exitButtonHandler(ActionEvent event) {       
     }
     
 }
