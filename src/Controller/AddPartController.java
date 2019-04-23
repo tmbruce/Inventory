@@ -5,7 +5,10 @@
  */
 package Controller;
 
+import Model.Inventory;
+import Model.Part;
 import Model.inHouse;
+import Model.outSourced;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -54,13 +58,18 @@ public class AddPartController implements Initializable {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    private boolean outSourced;
     private ToggleGroup sourceToggleGroup;
+    private inHouse newInHouse;
+    private outSourced newOutSourced;
+    private String errorMessage = new String();
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //Initialization of the toggle group
         sourceToggleGroup = new ToggleGroup();
         this.inHouseRadio.setToggleGroup(sourceToggleGroup);
         this.outsourcedRadio.setToggleGroup(sourceToggleGroup);
@@ -68,21 +77,80 @@ public class AddPartController implements Initializable {
     }    
 
     @FXML
-    private void radioButtonChange(ActionEvent event) {
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
-            companyMachineLabel.setText("Machine ID");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
-            companyMachineField.setPromptText("Machine ID");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
-            companyMachineLabel.setText("Company Name");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
-            companyMachineField.setPromptText("Company Name");
-        
+    //Handler to determine state of toggle button
+    private void inHousePartsRadio(ActionEvent event){
+        outSourced = false;
+        companyMachineLabel.setText("Machine ID");
+        companyMachineField.setPromptText("Machine ID");
+    }
+    
+    @FXML
+    //Handler to determine state of toggle button
+    private void outSourcedRadio(ActionEvent event){
+        outSourced = true;
+        companyMachineLabel.setText("Company Name");
+        companyMachineField.setPromptText("Company Name");
     }
 
     @FXML
-    private void saveButtonHandler(ActionEvent event) {
-       
+    private void saveButtonHandler(ActionEvent event) throws IOException {
+        String partName = partNameField.getText();
+        double partPrice = Double.parseDouble(partPriceField.getText());
+        int partInventory = Integer.parseInt(partInvField.getText());
+        int partMin = Integer.parseInt(partMinField.getText());
+        int partMax = Integer.parseInt(partMaxField.getText());
+        
+        try{
+            errorMessage = Part.validator(partName, partPrice, partInventory, partMin, partMax);
+            if (errorMessage != null){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Parameter Error");
+                alert.setHeaderText("Error");
+                alert.setContentText(errorMessage);
+                errorMessage = "";
+                alert.showAndWait();
+            }
+            
+            else {
+                if (outSourced == false){
+                    newInHouse = new inHouse(
+                    Inventory.partIDgen(),
+                    partName,
+                    partPrice,
+                    partInventory,
+                    partMin,
+                    partMax,
+                    Integer.parseInt(companyMachineField.getText()));
+                    Inventory.addPart(newInHouse);
+                    System.out.println(Inventory.getParts());                   //DELETE BEFORE SUBMISSION, DEBUGGING PURPOSE ONLY
+                    }
+                else if (outSourced == true){
+                    newOutSourced = new outSourced(
+                    Inventory.partIDgen(),
+                    partName,
+                    partPrice,
+                    partInventory,
+                    partMin,
+                    partMax,
+                    companyMachineField.getText());
+                    Inventory.addPart(newOutSourced);
+                    System.out.println(Inventory.getParts());                   //DELETE BEFORE SUBMISSION< DEBUGGING PURPOSE ONLY                
+                    }
+                Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+                Scene mainScreenScene = new Scene(mainScreenParent);
+                Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+                window.setScene(mainScreenScene);
+                window.show();
+            
+            }    
+        }
+        catch(NumberFormatException e){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error adding part");
+            alert.setContentText("Form is blank");
+            alert.showAndWait();
+        } 
     }
 
     @FXML

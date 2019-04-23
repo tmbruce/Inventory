@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Inventory;
 import Model.Part;
 import java.io.IOException;
 import java.net.URL;
@@ -74,24 +75,25 @@ public class MainScreenController implements Initializable {
     private Button deleteProdutsButton;
     @FXML
     private Button exitButton;
+    
+    
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //Set up table view columns
         partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
         partInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
         partsPriceUnitColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
         
-        partsTableView.setItems(getParts());
+        //Grab items from observable list
+        partsTableView.setItems(Inventory.getParts());
     }
+
     
-    //This method returns an ObservableList of part objects
-    public ObservableList<Part> getParts(){
-        ObservableList<Part> parts = FXCollections.observableArrayList();
-    }
 
     @FXML
     private void partsSearchHandler(ActionEvent event) {
