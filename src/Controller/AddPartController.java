@@ -100,14 +100,14 @@ public class AddPartController implements Initializable {
         int partMin = Integer.parseInt(partMinField.getText());
         int partMax = Integer.parseInt(partMaxField.getText());
         
-        try{
+        try{ 
             errorMessage = Part.validator(partName, partPrice, partInventory, partMin, partMax);
-            if (errorMessage != null){
+            if (errorMessage.length() > 0){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Parameter Error");
                 alert.setHeaderText("Error");
                 alert.setContentText(errorMessage);
-                errorMessage = "";
+                System.out.println(errorMessage);
                 alert.showAndWait();
             }
             
@@ -122,7 +122,6 @@ public class AddPartController implements Initializable {
                     partMax,
                     Integer.parseInt(companyMachineField.getText()));
                     Inventory.addPart(newInHouse);
-                    System.out.println(Inventory.getParts());                   //DELETE BEFORE SUBMISSION, DEBUGGING PURPOSE ONLY
                     }
                 else if (outSourced == true){
                     newOutSourced = new outSourced(
@@ -134,17 +133,15 @@ public class AddPartController implements Initializable {
                     partMax,
                     companyMachineField.getText());
                     Inventory.addPart(newOutSourced);
-                    System.out.println(Inventory.getParts());                   //DELETE BEFORE SUBMISSION< DEBUGGING PURPOSE ONLY                
                     }
                 Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
                 Scene mainScreenScene = new Scene(mainScreenParent);
                 Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
                 window.setScene(mainScreenScene);
                 window.show();
-            
-            }    
-        }
-        catch(NumberFormatException e){
+                }    
+            }
+            catch(NumberFormatException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Error adding part");

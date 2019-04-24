@@ -79,11 +79,12 @@ public abstract class Part {
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String validator(String partName, double partPrice, int inStock, int min, int max){
-        if (partName == null){
-            errorMessage.concat("Part name required\n ");
+        errorMessage = "";
+        if (partName == null || partName.isEmpty()){
+            errorMessage += "Part name required\n ";
         }
-        if (partPrice <= 0){
-            errorMessage.concat("Price must be greater than $0.00\n");
+        if (partPrice <= 0 || partPrice == 0){
+            errorMessage += "Price must be greater than $0.00\n";
         }
         if (inStock < 0){
             errorMessage += "Number in stock must be positive\n";
