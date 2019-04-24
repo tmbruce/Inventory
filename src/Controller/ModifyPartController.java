@@ -54,6 +54,8 @@ public class ModifyPartController implements Initializable {
     @FXML
     private Button cancelButton;
     private ToggleGroup sourceToggleGroup;
+    private boolean outSourced;
+    
 
     /**
      * Initializes the controller class.
@@ -66,16 +68,17 @@ public class ModifyPartController implements Initializable {
     }    
 
     @FXML
-    private void radioButtonChange(ActionEvent event){
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
-            companyMachineLabel.setText("Machine ID");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.inHouseRadio))
-            companyMachineField.setPromptText("Machine ID");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
-            companyMachineLabel.setText("Company Name");
-        if (this.sourceToggleGroup.getSelectedToggle().equals(this.outsourcedRadio))
-            companyMachineField.setPromptText("Company Name");
-        
+    private void inHousePartsRadio(ActionEvent event){
+        outSourced = false;
+        companyMachineLabel.setText("Machine ID");
+        companyMachineField.setPromptText("Machine ID");
+    }
+    
+    @FXML
+    private void outSourcedRadio(ActionEvent event){
+        outSourced = true;
+        companyMachineLabel.setText("Company Name");
+        companyMachineField.setPromptText("Company Name");
     }
 
     @FXML

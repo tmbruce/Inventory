@@ -107,7 +107,6 @@ public class AddPartController implements Initializable {
                 alert.setTitle("Parameter Error");
                 alert.setHeaderText("Error");
                 alert.setContentText(errorMessage);
-                System.out.println(errorMessage);
                 alert.showAndWait();
             }
             

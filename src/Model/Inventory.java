@@ -8,8 +8,10 @@ import javafx.collections.ObservableList;
  * @author tbruce
  */
 public class Inventory {
+    private static ObservableList<Product> productList = FXCollections.observableArrayList();
     private static ObservableList<Part> partsList = FXCollections.observableArrayList();
     private static int numParts = 0;
+    private static int numProducts = 0;
     
     public static int partIDgen(){
         numParts++;
