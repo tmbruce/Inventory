@@ -52,7 +52,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="partIDField" layoutX="173.0" layoutY="53.0" />
+            <TextField fx:id="partIDField" editable="false" layoutX="173.0" layoutY="53.0" />
             <TextField fx:id="partNameField" layoutX="173.0" layoutY="88.0" promptText="Part Name" />
             <TextField fx:id="partInvField" layoutX="173.0" layoutY="123.0" promptText="Inventory Level" />
             <TextField fx:id="partPriceField" layoutX="173.0" layoutY="158.0" promptText="Price/Cost" />

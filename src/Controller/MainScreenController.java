@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -118,17 +119,28 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void modifyPartsHandler(ActionEvent event) throws IOException {
+        
         modifyPart = partsTableView.getSelectionModel().getSelectedItem();
         modifyPartIndexNum = getParts().indexOf(modifyPart);
-        System.out.println(modifyPart);
-        
-        Parent modifyPartParent = FXMLLoader.load(getClass().getResource("/Views/modifyPart.fxml"));
-        Scene modifyPartScene = new Scene(modifyPartParent);
-        
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(modifyPartScene);
-        window.show();
+        if (modifyPartIndexNum < 1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Selection Error");
+            alert.setContentText("Please select a part to modify.");
+            alert.showAndWait();
+        }
+        else{
+            System.out.println(modifyPart);
+
+            Parent modifyPartParent = FXMLLoader.load(getClass().getResource("/Views/modifyPart.fxml"));
+            Scene modifyPartScene = new Scene(modifyPartParent);
+
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            window.setScene(modifyPartScene);
+            window.show();
+        }
     }
+    
 
     @FXML
     private void deletePartsHandler(ActionEvent event) {
