@@ -77,7 +77,7 @@ public abstract class Part {
     //Validation checks
     public static String errorMessage ="";
     
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    //@SuppressWarnings("ResultOfMethodCallIgnored")
     public static String validator(String partName, double partPrice, int inStock, int min, int max){
         errorMessage = "";
         if (partName == null || partName.isEmpty()){
