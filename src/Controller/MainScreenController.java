@@ -118,6 +118,10 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void modifyPartsHandler(ActionEvent event) throws IOException {
+        modifyPart = partsTableView.getSelectionModel().getSelectedItem();
+        modifyPartIndexNum = getParts().indexOf(modifyPart);
+        System.out.println(modifyPart);
+        
         Parent modifyPartParent = FXMLLoader.load(getClass().getResource("/Views/modifyPart.fxml"));
         Scene modifyPartScene = new Scene(modifyPartParent);
         
@@ -146,8 +150,7 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void modifyProductsHandler(ActionEvent event) throws IOException {
-        modifyPart = partsTableView.getSelectionModel().getSelectedItem();
-        modifyPartIndexNum = getParts().indexOf(modifyPart);
+
         Parent modifyProductParent = FXMLLoader.load(getClass().getResource("/Views/modifyProduct.fxml"));
         Scene modifyProductScene = new Scene(modifyProductParent);
         
