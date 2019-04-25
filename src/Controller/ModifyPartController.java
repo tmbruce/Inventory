@@ -5,6 +5,11 @@
  */
 package Controller;
 
+import static Controller.MainScreenController.partToModify;
+import static Model.Inventory.getParts;
+import Model.Part;
+import Model.inHouse;
+import Model.outSourced;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,6 +60,8 @@ public class ModifyPartController implements Initializable {
     private Button cancelButton;
     private ToggleGroup sourceToggleGroup;
     private boolean outSourced;
+    private int partID;
+    int modifyPartIndexNum = partToModify();
     
 
     /**
@@ -65,6 +72,25 @@ public class ModifyPartController implements Initializable {
         sourceToggleGroup = new ToggleGroup();
         this.inHouseRadio.setToggleGroup(sourceToggleGroup);
         this.outsourcedRadio.setToggleGroup(sourceToggleGroup);
+        
+        Part part = getParts().get(modifyPartIndexNum);
+        partID = getParts().get(modifyPartIndexNum).getPartID();
+        partIDField.setText("Auto Generated: " + partID);
+        partNameField.setText(part.getPartName());
+        partInvField.setText(Integer.toString(part.getInStock()));
+        partPriceField.setText(Double.toString(part.getPartPrice()));
+        partMinField.setText(Integer.toString(part.getMin()));
+        partMaxField.setText(Integer.toString(part.getMax()));
+        if (part instanceof inHouse){
+            companyMachineLabel.setText("Machine ID");
+            companyMachineField.setText(Integer.toString(((inHouse) part).getMachineID()));
+            inHouseRadio.setSelected(true);
+        }
+        else {
+            companyMachineLabel.setText("Company Name");
+            companyMachineField.setText(((outSourced) part).getCompanyName());
+            outsourcedRadio.setSelected(true);
+        }
     }    
 
     @FXML

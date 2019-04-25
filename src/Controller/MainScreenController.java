@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.Inventory;
+import static Model.Inventory.getParts;
 import Model.Part;
 import java.io.IOException;
 import java.net.URL;
@@ -75,6 +76,8 @@ public class MainScreenController implements Initializable {
     private Button deleteProdutsButton;
     @FXML
     private Button exitButton;
+    private static Part modifyPart;
+    private static int modifyPartIndexNum;
     
     
 
@@ -91,6 +94,10 @@ public class MainScreenController implements Initializable {
         
         //Grab items from observable list
         partsTableView.setItems(Inventory.getParts());
+    }
+    
+    public static int partToModify(){
+        return modifyPartIndexNum;
     }
 
     
@@ -139,6 +146,8 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void modifyProductsHandler(ActionEvent event) throws IOException {
+        modifyPart = partsTableView.getSelectionModel().getSelectedItem();
+        modifyPartIndexNum = getParts().indexOf(modifyPart);
         Parent modifyProductParent = FXMLLoader.load(getClass().getResource("/Views/modifyProduct.fxml"));
         Scene modifyProductScene = new Scene(modifyProductParent);
         

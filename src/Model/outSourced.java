@@ -20,8 +20,8 @@ public class outSourced extends Part {
         this.companyName = new SimpleStringProperty(companyName);
     }
     
-    public SimpleStringProperty getCompanyName(){
-        return companyName;
+    public String getCompanyName(){
+        return companyName.get();
     }
     public void setCompanyName(SimpleStringProperty companyName){
         this.companyName = companyName;

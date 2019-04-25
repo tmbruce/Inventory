@@ -20,8 +20,8 @@ public class inHouse extends Part {
         this.machineID = new SimpleIntegerProperty(machineID);
     }
     
-    public SimpleIntegerProperty getMachineID(){
-        return machineID;
+    public int getMachineID(){
+        return machineID.get();
     }
     public void setMachineID(SimpleIntegerProperty machineID){
         this.machineID = machineID;
