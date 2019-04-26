@@ -26,7 +26,18 @@ public class Inventory {
     public static void deletePart(Part part){
         partsList.remove(part);
     }
-//Same as above for products list
+    public static void updateParts(int index, Part part){
+        partsList.set(index, part);
+    }
+
+    public static int producIDgen(){
+        numProducts++;
+        return numProducts;
+    }
+    
+    public static ObservableList<Product> getProducts(){
+        return productList;
+    }
     
     
 }

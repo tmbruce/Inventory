@@ -6,6 +6,7 @@
 package Controller;
 
 import static Controller.MainScreenController.partToModify;
+import Model.Inventory;
 import static Model.Inventory.getParts;
 import Model.Part;
 import Model.inHouse;
@@ -20,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -62,6 +64,7 @@ public class ModifyPartController implements Initializable {
     private boolean outSourced;
     private int partID;
     int modifyPartIndexNum = partToModify();
+    private String errorMessage = new String();
     
 
     /**
@@ -108,7 +111,71 @@ public class ModifyPartController implements Initializable {
     }
 
     @FXML
-    private void saveButtonHandler(ActionEvent event) {
+    private void saveButtonHandler(ActionEvent event) throws IOException {
+        if (partPriceField.getText().isEmpty() ||
+            partInvField.getText().isEmpty() ||
+            partMinField.getText().isEmpty() ||
+            partMaxField.getText().isEmpty() ||
+            partNameField.getText().isEmpty() ||
+            companyMachineField.getText().isEmpty()){
+            Alert alert = new Alert (Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Empty Fields");
+            alert.setContentText("Empty fields present in form.");
+            alert.showAndWait();
+            }
+        
+        else {
+            //Preemptive error handling for blank fields on form
+            String partName = partNameField.getText();
+            double partPrice = Double.parseDouble(partPriceField.getText());
+            int partInventory = Integer.parseInt(partInvField.getText());
+            int partMin = Integer.parseInt(partMinField.getText());
+            int partMax = Integer.parseInt(partMaxField.getText());
+            outSourced = outsourcedRadio.isSelected();
+
+            //logic validation 
+            errorMessage = Part.validator(partName, partPrice, partInventory, partMin, partMax);
+            if (errorMessage.length() > 0){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Parameter Error");
+                alert.setHeaderText("Error");
+                alert.setContentText(errorMessage);
+                alert.showAndWait();
+            }
+            
+            
+            else {
+                if (outSourced == false){
+                    inHouse newInHouse = new inHouse(
+                    partID,
+                    partName,
+                    partPrice,
+                    partInventory,
+                    partMin,
+                    partMax,
+                    Integer.parseInt(companyMachineField.getText()));
+                    Inventory.updateParts(modifyPartIndexNum, newInHouse);
+
+                    }
+                else if (outSourced == true){
+                    outSourced newOutSourced = new outSourced(
+                    partID,
+                    partName,
+                    partPrice,
+                    partInventory,
+                    partMin,
+                    partMax,
+                    companyMachineField.getText());
+                    Inventory.updateParts(modifyPartIndexNum, newOutSourced);
+                    }
+                Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+                Scene mainScreenScene = new Scene(mainScreenParent);
+                Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+                window.setScene(mainScreenScene);
+                window.show();
+                }    
+            }
     }
 
     @FXML

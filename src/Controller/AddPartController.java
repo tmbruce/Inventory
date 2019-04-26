@@ -72,8 +72,7 @@ public class AddPartController implements Initializable {
         //Initialization of the toggle group
         sourceToggleGroup = new ToggleGroup();
         this.inHouseRadio.setToggleGroup(sourceToggleGroup);
-        this.outsourcedRadio.setToggleGroup(sourceToggleGroup);
-        
+        this.outsourcedRadio.setToggleGroup(sourceToggleGroup);  
     }    
 
     @FXML
@@ -94,13 +93,29 @@ public class AddPartController implements Initializable {
 
     @FXML
     private void saveButtonHandler(ActionEvent event) throws IOException {
-        String partName = partNameField.getText();
-        double partPrice = Double.parseDouble(partPriceField.getText());
-        int partInventory = Integer.parseInt(partInvField.getText());
-        int partMin = Integer.parseInt(partMinField.getText());
-        int partMax = Integer.parseInt(partMaxField.getText());
         
-        try{ 
+        if (partPriceField.getText().isEmpty() ||
+            partInvField.getText().isEmpty() ||
+            partMinField.getText().isEmpty() ||
+            partMaxField.getText().isEmpty() ||
+            partNameField.getText().isEmpty() ||
+            companyMachineField.getText().isEmpty()){
+            Alert alert = new Alert (Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Empty Fields");
+            alert.setContentText("Empty fields present in form.");
+            alert.showAndWait();
+            }
+        
+        else {
+            //Preemptive error handling for blank fields on form
+            String partName = partNameField.getText();
+            double partPrice = Double.parseDouble(partPriceField.getText());
+            int partInventory = Integer.parseInt(partInvField.getText());
+            int partMin = Integer.parseInt(partMinField.getText());
+            int partMax = Integer.parseInt(partMaxField.getText());
+
+            //logic validation 
             errorMessage = Part.validator(partName, partPrice, partInventory, partMin, partMax);
             if (errorMessage.length() > 0){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -140,23 +155,14 @@ public class AddPartController implements Initializable {
                 window.show();
                 }    
             }
-            catch(NumberFormatException e){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Error adding part");
-            alert.setContentText("Form is blank");
-            alert.showAndWait();
-        } 
     }
 
     @FXML
     private void cancelButtonHandler(ActionEvent event) throws IOException {
         Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
         Scene mainScreenScene = new Scene(mainScreenParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(mainScreenScene);
         window.show();
-    }
-    
+    }  
 }

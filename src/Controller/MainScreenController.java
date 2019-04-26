@@ -6,10 +6,12 @@
 package Controller;
 
 import Model.Inventory;
+import static Model.Inventory.deletePart;
 import static Model.Inventory.getParts;
 import Model.Part;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -79,9 +82,9 @@ public class MainScreenController implements Initializable {
     private Button exitButton;
     private static Part modifyPart;
     private static int modifyPartIndexNum;
+    private static Part deletePart;
+    private static int deletePartNum;
     
-    
-
     /**
      * Initializes the controller class.
      */
@@ -100,8 +103,6 @@ public class MainScreenController implements Initializable {
     public static int partToModify(){
         return modifyPartIndexNum;
     }
-
-    
 
     @FXML
     private void partsSearchHandler(ActionEvent event) {
@@ -122,7 +123,7 @@ public class MainScreenController implements Initializable {
         
         modifyPart = partsTableView.getSelectionModel().getSelectedItem();
         modifyPartIndexNum = getParts().indexOf(modifyPart);
-        if (modifyPartIndexNum < 1){
+        if (modifyPartIndexNum == -1){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Selection Error");
@@ -130,20 +131,41 @@ public class MainScreenController implements Initializable {
             alert.showAndWait();
         }
         else{
-            System.out.println(modifyPart);
-
             Parent modifyPartParent = FXMLLoader.load(getClass().getResource("/Views/modifyPart.fxml"));
             Scene modifyPartScene = new Scene(modifyPartParent);
-
             Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
             window.setScene(modifyPartScene);
             window.show();
         }
     }
+    public void updatePartsTable() {
+        partsTableView.setItems(getParts());
+    }
     
-
     @FXML
     private void deletePartsHandler(ActionEvent event) {
+        deletePart = partsTableView.getSelectionModel().getSelectedItem();
+        deletePartNum = getParts().indexOf(deletePart);
+        if (deletePartNum == -1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Delete Error");
+            alert.setContentText("Please select a part to delete");
+            alert.showAndWait();
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Confirm Delete");
+            alert.setContentText("Deleted items are not able to be recovered\n");
+            Optional<ButtonType> result = alert.showAndWait();
+            
+            if (result.get() == ButtonType.OK){
+                deletePart(deletePart);
+                updatePartsTable();
+                
+            }
+        }
     }
 
     @FXML
@@ -154,7 +176,6 @@ public class MainScreenController implements Initializable {
     private void addProductsHandler(ActionEvent event) throws IOException {
         Parent addProductParent = FXMLLoader.load(getClass().getResource("/Views/addProduct.fxml"));
         Scene addProductScene = new Scene(addProductParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(addProductScene);
         window.show();
@@ -165,7 +186,6 @@ public class MainScreenController implements Initializable {
 
         Parent modifyProductParent = FXMLLoader.load(getClass().getResource("/Views/modifyProduct.fxml"));
         Scene modifyProductScene = new Scene(modifyProductParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(modifyProductScene);
         window.show();
@@ -178,5 +198,4 @@ public class MainScreenController implements Initializable {
     @FXML
     private void exitButtonHandler(ActionEvent event) {       
     }
-    
 }
