@@ -34,6 +34,9 @@ public class Inventory {
         numProducts++;
         return numProducts;
     }
+    public static void addProduct(Product product){
+        productList.add(product);
+    }
     
     public static ObservableList<Product> getProducts(){
         return productList;

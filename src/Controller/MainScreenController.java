@@ -9,6 +9,7 @@ import Model.Inventory;
 import static Model.Inventory.deletePart;
 import static Model.Inventory.getParts;
 import Model.Part;
+import Model.Product;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -63,15 +64,15 @@ public class MainScreenController implements Initializable {
     @FXML
     private TextField productSearchTextField;
     @FXML
-    private TableView<?> productsTableView;
+    private TableView<Product> productsTableView;
     @FXML
-    private TableColumn<?, ?> productIDColumn;
+    private TableColumn<Product, Integer> productIDColumn;
     @FXML
-    private TableColumn<?, ?> productNameColumn;
+    private TableColumn<Product, String> productNameColumn;
     @FXML
-    private TableColumn<?, ?> productInventoryLevelColumn;
+    private TableColumn<Product, Integer> productInventoryLevelColumn;
     @FXML
-    private TableColumn<?, ?> productPriceUnitColumn;
+    private TableColumn<Product, Double> productPriceUnitColumn;
     @FXML
     private Button addProductsButton;
     @FXML
@@ -90,14 +91,24 @@ public class MainScreenController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //Set up table view columns
+        //Set up table view columns for parts table
         partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
         partInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
         partsPriceUnitColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
         
-        //Grab items from observable list
+        //Grab items from observable list for parts table
         partsTableView.setItems(Inventory.getParts());
+        
+        //Set up table view columns for products table
+        productIDColumn.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        productInventoryLevelColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        productPriceUnitColumn.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
+        
+        //Grab items from observable list for prodcts table
+        productsTableView.setItems(Inventory.getProducts());
+        
     }
     
     public static int partToModify(){

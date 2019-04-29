@@ -5,6 +5,11 @@
  */
 package Controller;
 
+import Model.Inventory;
+import static Model.Inventory.getParts;
+import Model.Part;
+import Model.Product;
+import static Model.Product.getProductParts;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,10 +20,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 /**
@@ -41,25 +48,25 @@ public class AddProductController implements Initializable {
     @FXML
     private TextField maxTextField;
     @FXML
-    private TableView<?> tableView;
+    private TableView<Part> tableView;
     @FXML
-    private TableColumn<?, ?> partIDColumn;
+    private TableColumn<Integer, ?> partIDColumn;
     @FXML
-    private TableColumn<?, ?> partNameColumn;
+    private TableColumn<Part, String> partNameColumn;
     @FXML
-    private TableColumn<?, ?> partInventoryColumn;
+    private TableColumn<Part, Integer> partInventoryColumn;
     @FXML
-    private TableColumn<?, ?> partPriceColumn;
+    private TableColumn<Part, Double> partPriceColumn;
     @FXML
-    private TableView<?> tableView2;
+    private TableView<Part> tableView2;
     @FXML
-    private TableColumn<?, ?> partIDColumn2;
+    private TableColumn<Part, Integer> partIDColumn2;
     @FXML
-    private TableColumn<?, ?> partNameColumn2;
+    private TableColumn<Part, String> partNameColumn2;
     @FXML
-    private TableColumn<?, ?> partInventoryColumn2;
+    private TableColumn<Part, Integer> partInventoryColumn2;
     @FXML
-    private TableColumn<?, ?> partPriceColumn2;
+    private TableColumn<Part, Double> partPriceColumn2;
     @FXML
     private Button searchButton;
     @FXML
@@ -72,13 +79,35 @@ public class AddProductController implements Initializable {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    private static Part addPart;
+    private static int addPartIndexNum;
+    private static Part deletePart;
+    private static int deletePartIndexNum;
+    private String errorMessage = new String();
+    private Product newProduct;
+    private String productName = new String();
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        //set up parts table view
+        partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
+        partInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        partPriceColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
+        tableView.setItems(Inventory.getParts());
+        
+        //set up associated parts table view
+        partIDColumn2.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        partNameColumn2.setCellValueFactory(new PropertyValueFactory<>("partName"));
+        partInventoryColumn2.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        partPriceColumn2.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
+        tableView2.setItems(Product.getProductParts());
+        
+        //set up product ID field
+        idTextField.setText("Auto Generated");
     }    
 
     @FXML
@@ -87,24 +116,105 @@ public class AddProductController implements Initializable {
 
     @FXML
     private void AddButtonHandler(ActionEvent event) {
+        addPart = tableView.getSelectionModel().getSelectedItem();
+        addPartIndexNum = getParts().indexOf(addPart);
+        if (addPartIndexNum == -1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Selection Error");
+            alert.setContentText("Please select a part to add.");
+            alert.showAndWait();
+        }
+        else{
+            Product.setProductParts(addPart);
+            updatePartsTable2();
+            
+        }
+        
     }
 
     @FXML
     private void DeleteButtonHandler(ActionEvent event) {
+        deletePart = tableView2.getSelectionModel().getSelectedItem();
+        System.out.println(deletePart);
+        deletePartIndexNum = Product.getProductParts().indexOf(deletePart);
+        if (deletePartIndexNum == -1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Selection Error");
+            alert.setContentText("Please select a part to delete.");
+            alert.showAndWait();
+        }
+        else{
+            Product.deletePart(deletePart);
+            updatePartsTable2();
+        }
     }
 
     @FXML
-    private void SaveButtonHandler(ActionEvent event) {
+    private void SaveButtonHandler(ActionEvent event) throws IOException {
+        if (nameTextField.getText().isEmpty() ||
+            invTextField.getText().isEmpty() ||
+            priceTextField.getText().isEmpty() ||
+            minTextField.getText().isEmpty() ||
+            maxTextField.getText().isEmpty()){
+            Alert alert = new Alert (Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Empty Fields");
+            alert.setContentText("Empty fields present in form.");
+            alert.showAndWait();
+        }
+        else {
+            productName = nameTextField.getText();
+            int productInventory = Integer.parseInt(invTextField.getText());
+            double productPrice = Double.parseDouble(priceTextField.getText());
+            int min = Integer.parseInt(minTextField.getText());
+            int max = Integer.parseInt(maxTextField.getText());
+            
+            errorMessage = Product.validator(productName, productPrice, productInventory, min, max);
+            if (errorMessage.length() > 0){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Parameter Error");
+                alert.setHeaderText("Error");
+                alert.setContentText(errorMessage);
+                alert.showAndWait();
+            }
+            else {
+                newProduct = new Product(getProductParts(),
+                                         Inventory.producIDgen(),
+                                         productName,
+                                         productPrice,
+                                         productInventory,
+                                         min,
+                                         max);
+                Inventory.addProduct(newProduct);
+                System.out.println(newProduct.getProductParts());
+
+            }
+            
+            Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+            Scene mainScreenScene = new Scene(mainScreenParent);
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            window.setScene(mainScreenScene);
+            window.show();
+            
+        }
     }
 
     @FXML
     private void CancelButtonHandler(ActionEvent event) throws IOException {
         Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
         Scene mainScreenScene = new Scene(mainScreenParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(mainScreenScene);
         window.show();
+    }
+    
+    public void updatePartsTable() {
+        tableView.setItems(Inventory.getParts());
+    }
+    public void updatePartsTable2(){
+        tableView2.setItems(Product.getProductParts());
     }
     
 }
