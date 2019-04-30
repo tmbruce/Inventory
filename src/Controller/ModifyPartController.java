@@ -9,6 +9,7 @@ import static Controller.MainScreenController.partToModify;
 import Model.Inventory;
 import static Model.Inventory.getParts;
 import Model.Part;
+import Model.Product;
 import Model.inHouse;
 import Model.outSourced;
 import java.io.IOException;
@@ -155,6 +156,12 @@ public class ModifyPartController implements Initializable {
                     partMax,
                     Integer.parseInt(companyMachineField.getText()));
                     Inventory.updateParts(modifyPartIndexNum, newInHouse);
+                    
+                    for (Product testProduct : Inventory.getProducts()){
+                        if (testProduct.getProductParts().contains(newInHouse)){
+                            Product()
+                        }
+                    }
 
                     }
                 else if (outSourced == true){
@@ -167,7 +174,14 @@ public class ModifyPartController implements Initializable {
                     partMax,
                     companyMachineField.getText());
                     Inventory.updateParts(modifyPartIndexNum, newOutSourced);
+                    
+                    for (Product product : Inventory.getProducts()){
+                        if (product.getProductParts().contains(newOutSourced)){
+                            
                     }
+                
+                    }
+                }
 
                 Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
                 Scene mainScreenScene = new Scene(mainScreenParent);

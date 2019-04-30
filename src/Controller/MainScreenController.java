@@ -156,6 +156,7 @@ public class MainScreenController implements Initializable {
         partsTableView.setItems(getParts());
     }
     
+    
     @FXML
     private void deletePartsHandler(ActionEvent event) {
         deletePart = partsTableView.getSelectionModel().getSelectedItem();
