@@ -43,6 +43,9 @@ public class Inventory {
     public static ObservableList<Product> getProducts(){
         return productList;
     }
+    public static void updateProduct(int index, Product product){
+        productList.set(index, product);
+    }
     
     
 }

@@ -188,8 +188,6 @@ public class AddProductController implements Initializable {
                                          min,
                                          max);
                 Inventory.addProduct(newProduct);
-                System.out.println(newProduct.getProductParts());
-                System.out.println(newProduct.getProductName());
             }
             
             Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));

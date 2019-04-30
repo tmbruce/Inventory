@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -123,6 +124,13 @@ public class AddPartController implements Initializable {
                 alert.setHeaderText("Error");
                 alert.setContentText(errorMessage);
                 alert.showAndWait();
+            }
+            if (sourceToggleGroup.getSelectedToggle() == null){
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Selection Error");
+                alert.setContentText("Please select a part source.");
+                alert.showAndWait(); 
             }
             
             else {

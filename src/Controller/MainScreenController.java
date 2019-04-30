@@ -160,6 +160,7 @@ public class MainScreenController implements Initializable {
     private void deletePartsHandler(ActionEvent event) {
         deletePart = partsTableView.getSelectionModel().getSelectedItem();
         deletePartNum = getParts().indexOf(deletePart);
+        String deleteMessage = "";
         if (deletePartNum == -1){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
@@ -168,16 +169,29 @@ public class MainScreenController implements Initializable {
             alert.showAndWait();
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Confirm Delete");
-            alert.setContentText("Deleted items are not able to be recovered\n");
-            Optional<ButtonType> result = alert.showAndWait();
+            for (Product product : Inventory.getProducts()) {
+                if (product.getProductParts().contains(deletePart)){
+                    deleteMessage += "This part is associated with " + product.getProductName() + "\nPlease delete from the product first.\n";
+                }
+            }
+            if (deleteMessage.length() > 0){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Delete Error");
+                alert.setContentText(deleteMessage);
+                alert.showAndWait();
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Confirm Delete");
+                alert.setContentText("Deleted items are not able to be recovered\n");
+                Optional<ButtonType> result = alert.showAndWait();
             
-            if (result.get() == ButtonType.OK){
-                deletePart(deletePart);
-                updatePartsTable();
-                
+                if (result.get() == ButtonType.OK){
+                    deletePart(deletePart);
+                    updatePartsTable();
+                }
             }
         }
     }

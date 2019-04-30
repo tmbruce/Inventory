@@ -143,8 +143,7 @@ public class ModifyPartController implements Initializable {
                 alert.setContentText(errorMessage);
                 alert.showAndWait();
             }
-            
-            
+
             else {
                 if (outSourced == false){
                     inHouse newInHouse = new inHouse(
@@ -169,6 +168,7 @@ public class ModifyPartController implements Initializable {
                     companyMachineField.getText());
                     Inventory.updateParts(modifyPartIndexNum, newOutSourced);
                     }
+
                 Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
                 Scene mainScreenScene = new Scene(mainScreenParent);
                 Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
