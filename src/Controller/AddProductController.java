@@ -7,6 +7,7 @@ package Controller;
 
 import Model.Inventory;
 import static Model.Inventory.getParts;
+import static Model.Inventory.producIDgen;
 import Model.Part;
 import Model.Product;
 import static Model.Product.getProductParts;
@@ -85,7 +86,6 @@ public class AddProductController implements Initializable {
     private static int deletePartIndexNum;
     private String errorMessage = new String();
     private Product newProduct;
-    private String productName = new String();
 
     /**
      * Initializes the controller class.
@@ -165,7 +165,7 @@ public class AddProductController implements Initializable {
             alert.showAndWait();
         }
         else {
-            productName = nameTextField.getText();
+            String productName = nameTextField.getText();
             int productInventory = Integer.parseInt(invTextField.getText());
             double productPrice = Double.parseDouble(priceTextField.getText());
             int min = Integer.parseInt(minTextField.getText());
@@ -181,7 +181,7 @@ public class AddProductController implements Initializable {
             }
             else {
                 newProduct = new Product(getProductParts(),
-                                         Inventory.producIDgen(),
+                                         producIDgen(),
                                          productName,
                                          productPrice,
                                          productInventory,
@@ -189,7 +189,7 @@ public class AddProductController implements Initializable {
                                          max);
                 Inventory.addProduct(newProduct);
                 System.out.println(newProduct.getProductParts());
-
+                System.out.println(newProduct.getProductName());
             }
             
             Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));

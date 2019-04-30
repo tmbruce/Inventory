@@ -107,8 +107,7 @@ public class MainScreenController implements Initializable {
         productPriceUnitColumn.setCellValueFactory(new PropertyValueFactory<>("productPrice"));
         
         //Grab items from observable list for prodcts table
-        productsTableView.setItems(Inventory.getProducts());
-        
+        productsTableView.setItems(Inventory.getProducts());        
     }
     
     public static int partToModify(){

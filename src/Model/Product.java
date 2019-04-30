@@ -41,7 +41,7 @@ public class Product {
         this.productID = productID;
     }
     
-    public String getName(){
+    public String getProductName(){
         return productName.get();
     }
     public void setProductName(SimpleStringProperty productName){
