@@ -51,7 +51,7 @@ public class AddProductController implements Initializable {
     @FXML
     private TableView<Part> tableView;
     @FXML
-    private TableColumn<Integer, ?> partIDColumn;
+    private TableColumn<Part, Integer> partIDColumn;
     @FXML
     private TableColumn<Part, String> partNameColumn;
     @FXML

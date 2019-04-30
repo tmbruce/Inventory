@@ -5,6 +5,10 @@
  */
 package Controller;
 
+import static Controller.MainScreenController.productToModify;
+import Model.Inventory;
+import Model.Part;
+import Model.Product;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 /**
@@ -41,25 +46,25 @@ public class ModifyProductController implements Initializable {
     @FXML
     private TextField maxTextField;
     @FXML
-    private TableView<?> tableView;
+    private TableView<Part> tableView;
     @FXML
-    private TableColumn<?, ?> partIDColumn;
+    private TableColumn<Part, Integer> partIDColumn;
     @FXML
-    private TableColumn<?, ?> partNameColumn;
+    private TableColumn<Part, String> partNameColumn;
     @FXML
-    private TableColumn<?, ?> partInventoryColumn;
+    private TableColumn<Part, Integer> partInventoryColumn;
     @FXML
-    private TableColumn<?, ?> partPriceColumn;
+    private TableColumn<Part, Double> partPriceColumn;
     @FXML
-    private TableView<?> tableView2;
+    private TableView<Part> tableView2;
     @FXML
-    private TableColumn<?, ?> partIDColumn2;
+    private TableColumn<Part, Integer> partIDColumn2;
     @FXML
-    private TableColumn<?, ?> partNameColumn2;
+    private TableColumn<Part, String> partNameColumn2;
     @FXML
-    private TableColumn<?, ?> partInventoryColumn2;
+    private TableColumn<Part, Integer> partInventoryColumn2;
     @FXML
-    private TableColumn<?, ?> partPriceColumn2;
+    private TableColumn<Part, Double> partPriceColumn2;
     @FXML
     private Button searchButton;
     @FXML
@@ -72,13 +77,35 @@ public class ModifyProductController implements Initializable {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    private int modifyPartIndexNum = productToModify();
+    private int productID;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        Product product = Inventory.getProducts().get(modifyPartIndexNum);
+        productID = Inventory.getProducts().get(modifyPartIndexNum).getProductID();
+        
+        idTextField.setText("Auto Generated: " + productID);
+        nameTextField.setText(product.getProductName());
+        invTextField.setText(Integer.toString(product.getInStock()));
+        priceTextField.setText(Double.toString(product.getProductPrice()));
+        minTextField.setText(Integer.toString(product.getMin()));
+        maxTextField.setText(Integer.toString(product.getMax()));
+        
+        partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
+        partInventoryColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        partPriceColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
+        tableView.setItems(Inventory.getParts());
+        
+        partIDColumn2.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        partNameColumn2.setCellValueFactory(new PropertyValueFactory<>("partName"));
+        partInventoryColumn2.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        partPriceColumn2.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
+        tableView2.setItems(Product.getProductParts());
     }    
 
     @FXML

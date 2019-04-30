@@ -37,7 +37,9 @@ public class Inventory {
     public static void addProduct(Product product){
         productList.add(product);
     }
-    
+    public static void removeProduct(Product product){
+        productList.remove(product);
+    }
     public static ObservableList<Product> getProducts(){
         return productList;
     }

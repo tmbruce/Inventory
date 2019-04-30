@@ -82,9 +82,13 @@ public class MainScreenController implements Initializable {
     @FXML
     private Button exitButton;
     private static Part modifyPart;
+    private static Product modifyProduct;
     private static int modifyPartIndexNum;
+    private static int modifyProductIndexNum;
     private static Part deletePart;
+    private static Product deleteProduct;
     private static int deletePartNum;
+    private static int deleteProductNum;
     
     /**
      * Initializes the controller class.
@@ -190,19 +194,60 @@ public class MainScreenController implements Initializable {
         window.setScene(addProductScene);
         window.show();
     }
+    
+    public static int productToModify(){
+        return modifyProductIndexNum;
+    }
 
     @FXML
     private void modifyProductsHandler(ActionEvent event) throws IOException {
-
-        Parent modifyProductParent = FXMLLoader.load(getClass().getResource("/Views/modifyProduct.fxml"));
-        Scene modifyProductScene = new Scene(modifyProductParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(modifyProductScene);
-        window.show();
+        modifyProduct = productsTableView.getSelectionModel().getSelectedItem();
+        modifyProductIndexNum = Inventory.getProducts().indexOf(modifyProduct);
+        if (modifyProductIndexNum == -1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Selection Error");
+            alert.setContentText("Please select a product to modify.");
+            alert.showAndWait();
+        }
+        else {
+            Parent modifyProductParent = FXMLLoader.load(getClass().getResource("/Views/modifyProduct.fxml"));
+            Scene modifyProductScene = new Scene(modifyProductParent);
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            window.setScene(modifyProductScene);
+            window.show();
+        }
+    }
+    
+    public void updateProductsTable() {
+        productsTableView.setItems(Inventory.getProducts());
     }
 
     @FXML
     private void deleteProductsHandler(ActionEvent event) {
+        deleteProduct = productsTableView.getSelectionModel().getSelectedItem();
+        deleteProductNum = Inventory.getProducts().indexOf(deleteProduct);
+        if (deleteProductNum == -1){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Selection Error");
+            alert.setContentText("Please select a product to delete.");
+            alert.showAndWait();
+        }
+        else{
+            if (deleteProduct.getProductParts().isEmpty()){
+                Inventory.removeProduct(deleteProduct);
+                updateProductsTable();
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Delete Error");
+                alert.setContentText("This product is currently associated with one or more parts.\nPlease delete associated parts first.");
+                alert.showAndWait();
+            }
+            
+        }
     }
 
     @FXML

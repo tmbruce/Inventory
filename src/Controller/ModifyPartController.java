@@ -63,7 +63,7 @@ public class ModifyPartController implements Initializable {
     private ToggleGroup sourceToggleGroup;
     private boolean outSourced;
     private int partID;
-    int modifyPartIndexNum = partToModify();
+    private int modifyPartIndexNum = partToModify();
     private String errorMessage = new String();
     
 
