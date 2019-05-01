@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.inHouseThreader;
 import static Controller.MainScreenController.partToModify;
 import Model.Inventory;
 import static Model.Inventory.getParts;
@@ -12,6 +13,7 @@ import Model.Part;
 import Model.Product;
 import Model.inHouse;
 import Model.outSourced;
+import Model.outSourcedThreader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -156,15 +158,13 @@ public class ModifyPartController implements Initializable {
                     partMax,
                     Integer.parseInt(companyMachineField.getText()));
                     Inventory.updateParts(modifyPartIndexNum, newInHouse);
+                    Runnable r = new inHouseThreader(newInHouse);
+                    new Thread(r).start();
                     
-                    for (Product testProduct : Inventory.getProducts()){
-                        if (testProduct.getProductParts().contains(newInHouse)){
-                            Product()
-                        }
-                    }
-
-                    }
-                else if (outSourced == true){
+                
+            }
+                
+                else if(outSourced == true){
                     outSourced newOutSourced = new outSourced(
                     partID,
                     partName,
@@ -174,13 +174,8 @@ public class ModifyPartController implements Initializable {
                     partMax,
                     companyMachineField.getText());
                     Inventory.updateParts(modifyPartIndexNum, newOutSourced);
-                    
-                    for (Product product : Inventory.getProducts()){
-                        if (product.getProductParts().contains(newOutSourced)){
-                            
-                    }
-                
-                    }
+                    Runnable r = new outSourcedThreader(newOutSourced);
+                    new Thread(r).start();
                 }
 
                 Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));

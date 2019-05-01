@@ -117,6 +117,10 @@ public class MainScreenController implements Initializable {
     public static int partToModify(){
         return modifyPartIndexNum;
     }
+    
+    public static Part partModel(){
+        return modifyPart;
+    }
 
     @FXML
     private void partsSearchHandler(ActionEvent event) {

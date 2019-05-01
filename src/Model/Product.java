@@ -25,7 +25,7 @@ public class Product {
     private SimpleIntegerProperty max;
     
     public Product(ObservableList<Part> associatedParts, int productID, String productName, double productPrice, int inStock, int min, int max){
-        Product.associatedParts = FXCollections.observableArrayList(associatedParts);
+        associatedParts = FXCollections.observableArrayList(associatedParts);
         this.productID = new SimpleIntegerProperty(productID);
         this.productName = new SimpleStringProperty(productName);
         this.productPrice = new SimpleDoubleProperty(productPrice);
@@ -84,6 +84,9 @@ public class Product {
     }
     public static void deletePart(Part part){
         associatedParts.remove(part);
+    }
+    public static void updateProductPart(int index, Part part){
+        associatedParts.set(index, part);
     }
     
     //validation for product
