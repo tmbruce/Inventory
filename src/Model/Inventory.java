@@ -30,7 +30,10 @@ public class Inventory {
     public static void updateParts(int index, Part part){
         partsList.set(index, part);
     }
-
+    //Function added per requirements, not used in implementation
+    public static Part lookupPart(int index){
+        return partsList.get(index);
+    }
     public static int producIDgen(){
         numProducts++;
         return numProducts;
@@ -47,6 +50,9 @@ public class Inventory {
     public static void updateProduct(int index, Product product){
         productList.set(index, product);
     }
- 
+    //Function added per requirements, not used in implementation
+    public static Product lookupProduct(int index){
+        return productList.get(index);
+    } 
     
 }

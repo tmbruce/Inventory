@@ -10,7 +10,6 @@ import static Controller.MainScreenController.partToModify;
 import Model.Inventory;
 import static Model.Inventory.getParts;
 import Model.Part;
-import Model.Product;
 import Model.inHouse;
 import Model.outSourced;
 import Model.outSourcedThreader;
@@ -191,7 +190,6 @@ public class ModifyPartController implements Initializable {
     private void cancelButtonHandler(ActionEvent event) throws IOException {
         Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
         Scene mainScreenScene = new Scene(mainScreenParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(mainScreenScene);
         window.show();

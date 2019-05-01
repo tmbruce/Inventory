@@ -10,10 +10,11 @@ import static Model.Inventory.getParts;
 import static Model.Inventory.producIDgen;
 import Model.Part;
 import Model.Product;
-import static Model.Product.getProductParts;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -79,6 +81,7 @@ public class AddProductController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
+    private boolean clicked = false;
     private Button cancelButton;
     private static Part addPart;
     private static int addPartIndexNum;
@@ -86,12 +89,14 @@ public class AddProductController implements Initializable {
     private static int deletePartIndexNum;
     private String errorMessage = new String();
     private Product newProduct;
+    private ObservableList<Part> tempParts = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         //set up parts table view
         partIDColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         partNameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
@@ -104,7 +109,7 @@ public class AddProductController implements Initializable {
         partNameColumn2.setCellValueFactory(new PropertyValueFactory<>("partName"));
         partInventoryColumn2.setCellValueFactory(new PropertyValueFactory<>("inStock"));
         partPriceColumn2.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
-        tableView2.setItems(Product.getProductParts());
+        
         
         //set up product ID field
         idTextField.setText("Auto Generated");
@@ -112,6 +117,32 @@ public class AddProductController implements Initializable {
 
     @FXML
     private void searchButtonHandler(ActionEvent event) {
+        boolean found = false;
+        try{
+            int intSearch = Integer.parseInt(searchTextField.getText());
+            for (Part p : Inventory.getParts()){
+                if (p.getPartID() == intSearch){
+                    tableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        catch(NumberFormatException e){
+            String stringSearch = searchTextField.getText();
+            for (Part p : Inventory.getParts()){
+                if (p.getPartName().equalsIgnoreCase(stringSearch)){
+                    tableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        if (found == false){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Search Error");
+            alert.setContentText("Product not found in system");
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -126,7 +157,8 @@ public class AddProductController implements Initializable {
             alert.showAndWait();
         }
         else{
-            Product.setProductParts(addPart);
+            tableView2.setItems(tempParts);
+            tempParts.add(addPart);
             updatePartsTable2();
             
         }
@@ -171,7 +203,7 @@ public class AddProductController implements Initializable {
             int min = Integer.parseInt(minTextField.getText());
             int max = Integer.parseInt(maxTextField.getText());
             
-            errorMessage = Product.validator(productName, productPrice, productInventory, min, max);
+            errorMessage = Product.validator(productName, productPrice, productInventory, min, max, tempParts);
             if (errorMessage.length() > 0){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Parameter Error");
@@ -180,27 +212,29 @@ public class AddProductController implements Initializable {
                 alert.showAndWait();
             }
             else {
-                newProduct = new Product(getProductParts(),
-                                         producIDgen(),
+                newProduct = new Product(producIDgen(),
                                          productName,
                                          productPrice,
                                          productInventory,
                                          min,
                                          max);
+                newProduct.setProductParts(tempParts);
                 Inventory.addProduct(newProduct);
-            }
-            
-            Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
-            Scene mainScreenScene = new Scene(mainScreenParent);
-            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-            window.setScene(mainScreenScene);
-            window.show();
-            
+                
+                Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+                Scene mainScreenScene = new Scene(mainScreenParent);
+                Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+                window.setScene(mainScreenScene);
+                window.show();
+                }            
         }
     }
+    
+    
 
     @FXML
     private void CancelButtonHandler(ActionEvent event) throws IOException {
+        System.out.println(clicked);
         Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
         Scene mainScreenScene = new Scene(mainScreenParent);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -212,7 +246,12 @@ public class AddProductController implements Initializable {
         tableView.setItems(Inventory.getParts());
     }
     public void updatePartsTable2(){
-        tableView2.setItems(Product.getProductParts());
+        tableView2.setItems(tempParts);
     }
+    @FXML
+    void clickChecker(MouseEvent event) {
+        clicked = true;
+    }
+    
     
 }

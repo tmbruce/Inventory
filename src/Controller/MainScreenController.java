@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
@@ -124,13 +123,39 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void partsSearchHandler(ActionEvent event) {
+        boolean found = false;
+        try{
+            int intSearch = Integer.parseInt(partsSearchTextField.getText());
+            for (Part p : Inventory.getParts()){
+                if (p.getPartID() == intSearch){
+                    partsTableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        catch (NumberFormatException e){
+            String stringSearch = partsSearchTextField.getText();
+            for (Part p : Inventory.getParts()){
+                if (p.getPartName().equalsIgnoreCase(stringSearch)){
+                    partsTableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        if (found == false){
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Search Error");
+            alert.setContentText("Part not found in system");
+            alert.showAndWait();
+        }
     }
+    
 
     @FXML
     private void addPartsHandler(ActionEvent event) throws IOException {
         Parent addPartParent = FXMLLoader.load(getClass().getResource("/Views/addPart.fxml"));
         Scene addPartScene = new Scene(addPartParent);
-        
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(addPartScene);
         window.show();
@@ -203,6 +228,32 @@ public class MainScreenController implements Initializable {
 
     @FXML
     private void productSearchHandler(ActionEvent event) {
+        boolean found = false;
+        try{
+            int intSearch = Integer.parseInt(productSearchTextField.getText());
+            for (Product p : Inventory.getProducts()){
+                if (p.getProductID() == intSearch){
+                    productsTableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        catch(NumberFormatException e){
+            String stringSearch = productSearchTextField.getText();
+            for (Product p : Inventory.getProducts()){
+                if (p.getProductName().equalsIgnoreCase(stringSearch)){
+                    productsTableView.getSelectionModel().select(p);
+                    found = true;
+                }
+            }
+        }
+        if (found == false){
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Search Error");
+            alert.setContentText("Product not found in system");
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -217,10 +268,14 @@ public class MainScreenController implements Initializable {
     public static int productToModify(){
         return modifyProductIndexNum;
     }
+    public static Product productMod(){
+        return modifyProduct;
+    }
 
     @FXML
     private void modifyProductsHandler(ActionEvent event) throws IOException {
         modifyProduct = productsTableView.getSelectionModel().getSelectedItem();
+        System.out.println(modifyProduct.getProductParts());
         modifyProductIndexNum = Inventory.getProducts().indexOf(modifyProduct);
         if (modifyProductIndexNum == -1){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

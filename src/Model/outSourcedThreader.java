@@ -15,8 +15,12 @@ public class outSourcedThreader implements Runnable{
     
     public outSourcedThreader(Part part){
         for (Product product : Inventory.getProducts()){
-            int index = product.getProductParts().indexOf(MainScreenController.partModel());
-            product.updateProductPart(index, part);
+            for (int i = 0; i < product.getProductParts().size(); i++){
+                if (product.getProductParts().get(i).equals(MainScreenController.partModel())){
+                    int index = product.getProductParts().indexOf(i);
+                    product.updateProductPart(i, part);
+                }
+            }
         }
     }
     

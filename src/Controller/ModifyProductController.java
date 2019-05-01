@@ -13,6 +13,8 @@ import Model.Product;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -87,6 +89,7 @@ public class ModifyProductController implements Initializable {
     private static int addPartIndexNum;
     private String errorMessage = new String();
     private Product newProduct;
+    private ObservableList<Part> tempParts = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class.
@@ -95,6 +98,9 @@ public class ModifyProductController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Product product = Inventory.getProducts().get(modifyProductIndexNum);
         productID = Inventory.getProducts().get(modifyProductIndexNum).getProductID();
+        Product productToMod = MainScreenController.productMod();
+        tempParts = Product.getProductParts();
+
         
         idTextField.setText("Auto Generated: " + productID);
         nameTextField.setText(product.getProductName());
@@ -114,6 +120,7 @@ public class ModifyProductController implements Initializable {
         partInventoryColumn2.setCellValueFactory(new PropertyValueFactory<>("inStock"));
         partPriceColumn2.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
         tableView2.setItems(Product.getProductParts());
+        System.out.println(Product.getProductParts());
     }    
 
     @FXML
@@ -132,7 +139,7 @@ public class ModifyProductController implements Initializable {
             alert.showAndWait();
         }
         else{
-            Product.setProductParts(addPart);
+            tempParts.add(addPart);
             updatePartsTable2();
             
         }
@@ -176,7 +183,8 @@ public class ModifyProductController implements Initializable {
             int min = Integer.parseInt(minTextField.getText());
             int max = Integer.parseInt(maxTextField.getText());
             
-            errorMessage = Product.validator(productName, productPrice, productInventory, min, max);
+            
+            errorMessage = Product.validator(productName, productPrice, productInventory, min, max, tempParts);
             if (errorMessage.length() > 0){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Parameter Error");
@@ -186,13 +194,13 @@ public class ModifyProductController implements Initializable {
             }
             
             else {
-                newProduct = new Product(tableView2.getItems(),
-                                         productID,
+                newProduct = new Product(productID,
                                          productName,
                                          productPrice,
                                          productInventory,
                                          min,
                                          max);
+                newProduct.setProductParts(tempParts);
                 Inventory.updateProduct(modifyProductIndexNum, newProduct);
                 
                 Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
@@ -218,7 +226,7 @@ public class ModifyProductController implements Initializable {
         tableView.setItems(Inventory.getParts());
     }
     public void updatePartsTable2(){
-        tableView2.setItems(Product.getProductParts());
+        tableView2.setItems(tempParts);
     }
     
 }

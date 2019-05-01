@@ -5,6 +5,7 @@
  */
 package Model;
 
+import java.util.ArrayList;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,8 +25,7 @@ public class Product {
     private SimpleIntegerProperty min;
     private SimpleIntegerProperty max;
     
-    public Product(ObservableList<Part> associatedParts, int productID, String productName, double productPrice, int inStock, int min, int max){
-        associatedParts = FXCollections.observableArrayList(associatedParts);
+    public Product(int productID, String productName, double productPrice, int inStock, int min, int max){
         this.productID = new SimpleIntegerProperty(productID);
         this.productName = new SimpleStringProperty(productName);
         this.productPrice = new SimpleDoubleProperty(productPrice);
@@ -54,7 +54,6 @@ public class Product {
     public void setProductPrice(SimpleDoubleProperty productPrice){
         this.productPrice = productPrice;
     }
-    
     public int getInStock(){
         return inStock.get();
     }
@@ -68,7 +67,6 @@ public class Product {
     public void setMin(SimpleIntegerProperty min){
         this.min = min;
     }
-    
     public int getMax(){
         return max.get();
     }
@@ -79,8 +77,8 @@ public class Product {
     public static ObservableList getProductParts(){
         return associatedParts;
     }
-    public static void setProductParts(Part part){
-        associatedParts.add(part);
+    public void setProductParts(ObservableList<Part> parts){
+        this.associatedParts = parts;
     }
     public static void deletePart(Part part){
         associatedParts.remove(part);
@@ -88,11 +86,20 @@ public class Product {
     public static void updateProductPart(int index, Part part){
         associatedParts.set(index, part);
     }
+    public static void resetProductParts(){
+        associatedParts.clear();
+    }
     
     //validation for product
     public static String errorMessage = "";
-    public static String validator(String productName, double productPrice, int inStock, int min, int max){
+    public static String validator(String productName, double productPrice, int inStock, int min, int max, ObservableList<Part> parts){
     errorMessage = "";
+    double partsSum = 0.00;;
+    for (int i = 0; i < parts.size(); i++){
+        partsSum += parts.get(i).getPartPrice();
+        System.out.println(partsSum);
+    }
+    
     if (productName == null){
         errorMessage += "Part name required\n ";
     }
@@ -107,6 +114,9 @@ public class Product {
     }
     if (max <  min){
         errorMessage += "Maximum must be greater than minimum\n";
+    }
+    if (productPrice < partsSum){
+        errorMessage += "Product price must be greater than the sum of the products";
     }
     return errorMessage;
     }
