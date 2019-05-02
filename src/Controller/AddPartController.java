@@ -11,6 +11,7 @@ import Model.inHouse;
 import Model.outSourced;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,10 +23,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -58,6 +61,7 @@ public class AddPartController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
+    private boolean clicked = false;
     private Button cancelButton;
     private boolean outSourced;
     private ToggleGroup sourceToggleGroup;
@@ -164,13 +168,35 @@ public class AddPartController implements Initializable {
                 }    
             }
     }
+    @FXML
+    void clickChecker(MouseEvent event) {
+        clicked = true;
+    }
 
     @FXML
     private void cancelButtonHandler(ActionEvent event) throws IOException {
-        Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
-        Scene mainScreenScene = new Scene(mainScreenParent);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(mainScreenScene);
-        window.show();
-    }  
+        if (clicked == true){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Unsaved Information");
+            alert.setContentText("Modified fields not saved will be lost.\n");
+            Optional<ButtonType> result = alert.showAndWait();
+            
+                if (result.get() == ButtonType.OK){
+                    Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+                    Scene mainScreenScene = new Scene(mainScreenParent);
+                    Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+                    window.setScene(mainScreenScene);
+                    window.show();
+                    clicked = false;
+                }
+        }
+        else{
+            Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/Views/mainScreen.fxml"));
+            Scene mainScreenScene = new Scene(mainScreenParent);
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            window.setScene(mainScreenScene);
+            window.show();
+        }
+    }
 }
